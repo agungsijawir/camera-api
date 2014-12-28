@@ -1,4 +1,12 @@
 <?php
+/************************************************************\
+    IPTC EASY 1.0 - IPTC data manipulator for JPEG images
+            
+    All reserved www.image-host-script.com
+        
+    Sep 15, 2008
+\************************************************************/
+
 define("IPTC_OBJECT_NAME", "005");
 define("IPTC_EDIT_STATUS", "007");
 define("IPTC_PRIORITY", "010");

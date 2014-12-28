@@ -18,6 +18,7 @@ to work which is also under the [MPL License](http://www.nihilogic.dk/licenses/m
 |   ├── proses.php
 |   ├── proses_2.php
 |   ├── IPTC.php
+|   ├── README.md
 │   ├── css
 │   │   ├── bootstrap.min.css
 │   │   ├── bootstrap-responsive.min.css
@@ -35,32 +36,8 @@ to work which is also under the [MPL License](http://www.nihilogic.dk/licenses/m
 │   │   │   ├── jquery-1.9.0.min.js
 │   │   │   ├── jquery-migrate-1.2.1.js 
 │   ├── pel
-│   │   ├── Pel.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   │   ├── PelConvert.php
-│   ├── uploads
+│   │   ├── << IPTC & PEL Library Here >>
+│   ├── uploads << uploaded processed jpeg by php here >>
 ```
 
 ## Authors

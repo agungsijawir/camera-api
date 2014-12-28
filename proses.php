@@ -26,6 +26,9 @@
 
 	// Check if image file is a actual image or fake image
 	if(isset($_POST)) {
+		// check existance upload target directory
+		if( !is_dir($target_dir) ) @mkdir($target_dir);
+
 	    $check_before = getimagesize($_FILES["takePictureFieldBefore"]["tmp_name"]);
 	    if($check_before !== false) 
 	    { 

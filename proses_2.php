@@ -32,6 +32,9 @@
 	// Check post is valid
 	if(isset($_POST))
 	{
+		// check existance upload target directory
+		if( !is_dir($target_dir) ) @mkdir($target_dir);
+		
 		// process image from base64
  		$source_before = imagecreatefromstring($imageData_before);
 		$source_after = imagecreatefromstring($imageData_after);

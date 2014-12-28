@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<!--
+	filename: index_2.html
+	Copyright (C) 2014 Agung Andika
+
+	Process input from compressed jpeg which taken by camera mobile phones (currently Android JB 4.1.x and up)
+	Image from camera resized using library "jQuery canvasResize Plugin" by goker.cebeci. Licensed under MIT.
+
+	version 0.1 - 28 December 2014
+	- 1st release 
+-->
+<html>
+	<head>
+		<meta name="viewport" content="width=320; user-scalable=no" />
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Confirm Volume</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+
+		<style>
+			#beforeVolume, #afterVolume {
+				width: 90%;
+				left: 10%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="alert alert-block">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<h4>Browser Detection!</h4>
+			<p>Your browser is: <code id="browser_dectection">unknown</code>.</p>
+		</div>
+
+		<div class="alert alert-block" id="noticeBrowser"> 
+			<h4>Unsupported Browser</h4>
+			<p>Dear User, please update your browser to latest version available on market. Recommend browser is: Chrome / Safari / Opera / Firefox.</p>
+			<p>Your browser is: <code id="browser_dectection_deprecated">unknown</code>.</p>
+		</div>
+
+		<h2>Confirm Volume</h2>
+		<hr/>
+
+		<div id="form_upload_pic">
+			<form method="post" name="uploadPic" action="proses_2.php" enctype="multipart/form-data">
+				<div class="row-fluid">
+					<div class="span12">
+						<input type="button" class="btn" id="take_picture_before" value="Before Volume" />
+					 	<div style="display: none;">
+							<input type="file" capture="camera" accept="image/*" id="takePictureFieldBefore" name="takePictureFieldBefore">
+						</div>
+
+						<img id="beforeVolume" name="beforeVolume" class="thumbnail"> <br/> 
+						
+						<p id="responseBefore" style="font-style: italic;"></p>
+						<input id="beforeVolume_base64" name="beforeVolume_base64" style="display: none;"/>	
+					</div>
+				</div>
+				<br/>
+				<div class="row-fluid">
+					<div class="span12">
+						<input type="button" class="btn" id="take_picture_after" value="After Volume" />
+					 	<div style="display: none;">
+							<input type="file" capture="camera" accept="image/*" id="takePictureFieldAfter" name="takePictureFieldAfter">
+						</div>
+
+						<img id="afterVolume" name="afterVolume" class="thumbnail"><br/> 
+
+						<p id="responseAfter" style="font-style: italic;"></p>
+						<input id="afterVolume_base64" name="afterVolume_base64" style="display: none;"/>	
+					</div>
+				</div>
+
+				<br/>
+				<div class="row-fluid">
+					<div class="span12">
+						<input type="submit" class="btn btn-primary" value="Upload!" />
+					</div>
+				</div>
+	 		</form>
+
+	 		<div class="well" id="dumpBrowser">
+	 		</div>
+ 		</div>
+		
+		<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-1.9.0.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/jquery/jquery-migrate-1.2.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/bootstrap/bootstrap.min.js"></script>
+
+		<!-- load jquery for imageResize --> 
+		<script type="text/javascript" charset="utf-8" src="js/imageresize/binaryajax.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/imageresize/exif.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/imageresize/canvasResize.js"></script>
+		<script>
+			var desiredWidth;
+			var jpegQuality = 80;
+			var jpegRotation = 0;
+			var jpegWidth = 640;
+			var jpegHeight = 0;
+
+			$(document).ready(function() 
+			{
+				console.log('onReady');
+				$("#noticeBrowser").hide();
+				$("#takePictureFieldBefore").on("change", gotPicBefore);
+				$("#takePictureFieldAfter").on("change", gotPicAfter);
+				desiredWidth = window.innerWidth;
+
+				if(!("url" in window) && ("webkitURL" in window)) 
+				{
+					window.URL = window.webkitURL;   
+				}
+
+				$("#take_picture_before").on("click", function() {
+					$("#takePictureFieldBefore").click();
+				});
+ 
+				$("#take_picture_after").on("click", function() {
+					$("#takePictureFieldAfter").click();
+				});
+ 
+				// do browser detection that depends jquery-migrate-1.2.1.js
+				$("#browser_dectection").html(getBrowserVersion);
+				$("#dumpBrowser").html(navigator.userAgent.toLowerCase());
+			});
+			
+			// Credit: https://www.youtube.com/watch?v=EPYnGFEcis4&feature=youtube_gdata_player
+			function gotPicBefore(event) 
+			{
+				var imageURI = event.target.files[0];
+				var imageFileSize = imageURI.size / 1024;
+
+				if(event.target.files.length == 1 && event.target.files[0].type.indexOf("image/") == 0)
+				{
+					$('#responseBefore').html(JSON.stringify(imageURI).replace(/,/g, ", <br/>"));
+
+					canvasResize(imageURI, {
+						width: jpegWidth,
+						height: jpegHeight,
+						crop: false,
+						quality: jpegQuality,
+						rotate: jpegRotation,
+						callback: function(data, width, height) {
+							$("#beforeVolume").attr("src", data);
+							$('#beforeVolume_base64').val( data );
+						}
+					});
+					
+				}
+			}
+
+			function gotPicAfter(event) 
+			{
+				var imageURI = event.target.files[0];
+				var imageFileSize = imageURI.size / 1024;
+
+				if(event.target.files.length == 1 && event.target.files[0].type.indexOf("image/") == 0)
+				{
+					$('#responseAfter').html(JSON.stringify(imageURI).replace(/,/g, ", <br/>"));
+
+					canvasResize(imageURI, {
+						width: jpegWidth,
+						height: jpegHeight,
+						crop: false,
+						quality: jpegQuality,
+						rotate: jpegRotation,
+						callback: function(data, width, height) {
+							$("#afterVolume").attr("src", data);
+							$('#afterVolume_base64').val( data );
+						}
+					});
+				}
+			} 
+
+			// simple browser detection
+			// modified version from: http://stackoverflow.com/a/27593326 by maja
+			function getBrowserVersion()
+			{
+				var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+				if(/trident/i.test(M[1]))
+				{
+					tem =  /\brv[ :]+(\d+)/g.exec(ua) || [];
+					navigator.isIE = true;
+
+					$("#form_upload_pic").hide();
+					$("#noticeBrowser").show();
+					$("#browser_dectection_deprecated").html("IE " + (tem[1] || ''));
+
+					return 'IE '+(tem[1] || '');
+				}
+				navigator.isIE = false;
+
+				if(M[1] === 'Chrome')
+				{
+					tem = ua.match(/\bOPR\/(\d+)/)
+					if(tem != null) 
+					{
+						if (parseInt(tem[1]) < 26)
+						{
+							// Opera older than version 26, function for upload and confirm is disabled.
+							$("#form_upload_pic").hide();
+							$("#noticeBrowser").show();
+							$("#browser_dectection_deprecated").html("Opera " + tem[1]); 
+						}
+						return 'Opera ' + tem[1];
+					}
+				}
+
+				M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+
+				if( (tem = ua.match(/version\/(\d+)/i)) != null)
+				{
+					M.splice(1, 1, tem[1]); 
+				}
+
+				if (M[0] === 'Firefox' && parseInt(M[1]) < 34)
+				{
+					// firefox older than version 34, function for upload and confirm is disabled.
+					$("#form_upload_pic").hide();
+					$("#noticeBrowser").show();
+				} else if (M[0] === 'Chrome' && parseInt(M[1]) < 39)
+				{
+					// Chrome older than version 39, function for upload and confirm is disabled.
+					$("#form_upload_pic").hide();
+					$("#noticeBrowser").show();
+				} else if (M[0] === 'Safari' && parseInt(M[1]) < 4)
+				{
+					// Safari older than version 4, function for upload and confirm is disabled.
+					$("#form_upload_pic").hide();
+					$("#noticeBrowser").show();
+				}
+
+				$("#browser_dectection_deprecated").html(M.join(' ')); 
+				return M.join(' ');
+			}
+		</script>
+	</body>
+</html>

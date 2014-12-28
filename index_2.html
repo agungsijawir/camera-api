@@ -185,9 +185,12 @@
 					tem =  /\brv[ :]+(\d+)/g.exec(ua) || [];
 					navigator.isIE = true;
 
-					$("#form_upload_pic").hide();
-					$("#noticeBrowser").show();
-					$("#browser_dectection_deprecated").html("IE " + (tem[1] || ''));
+					if (parseInt(tem[1]) < 11)
+					{
+						$("#form_upload_pic").hide();
+						$("#noticeBrowser").show();
+						$("#browser_dectection_deprecated").html("IE " + (tem[1] || ''));
+					}
 
 					return 'IE '+(tem[1] || '');
 				}

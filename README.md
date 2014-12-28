@@ -11,15 +11,57 @@ to work which is also under the [MPL License](http://www.nihilogic.dk/licenses/m
 - jQuery 1.9.0 licensed under MIT License
 
 ## Directory Structure
--/
- /css
- /img
- /js
- -->/bootstrap
- -->/imageresize
- -->/jquery
- /pel
- /uploads [for save uploaded jpeg]
+```
+├── camera-api/
+│   ├── index.html
+|   ├── index_2.html
+|   ├── proses.php
+|   ├── proses_2.php
+|   ├── IPTC.php
+│   ├── css
+│   │   ├── bootstrap.min.css
+│   │   ├── bootstrap-responsive.min.css
+│   ├── img
+│   │   ├── glyphicons-halflings.png
+│   │   ├── glyphicons-halflings-white.png
+│   ├── js 
+│   │   ├── bootstrap
+│   │   │   ├── bootstrap.min.js
+│   │   ├── imageresize
+│   │   │   ├── binaryajax.js
+│   │   │   ├── canvasResize.js
+│   │   │   ├── exif.js
+│   │   ├── jquery
+│   │   │   ├── jquery-1.9.0.min.js
+│   │   │   ├── jquery-migrate-1.2.1.js 
+│   ├── pel
+│   │   ├── Pel.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   │   ├── PelConvert.php
+│   ├── uploads
+```
 
 ## Authors
 **Agung Andika**

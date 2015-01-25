@@ -8,6 +8,10 @@
 
 	version 0.1 - 28 December 2014
 	- 1st release 
+
+	version 0.2 - 22 January 2015
+	- added ability to detect which mode picture taken, potrait or landscape
+	  and the resize picture will be determined by mode
 -->
 <html>
 	<head>
@@ -94,23 +98,24 @@
 		<script type="text/javascript" charset="utf-8" src="js/imageresize/exif.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/imageresize/canvasResize.js"></script>
 		<script>
-			var desiredWidth;
-			var jpegQuality = 80;
+			var jpegQuality = 70;
 			var jpegRotation = 0;
-			var jpegWidth = 640;
-			var jpegHeight = 0;
 
 			$(document).ready(function() 
 			{
-				console.log('onReady');
 				$("#noticeBrowser").hide();
-				$("#takePictureFieldBefore").on("change", gotPicBefore);
-				$("#takePictureFieldAfter").on("change", gotPicAfter);
-				desiredWidth = window.innerWidth;
+				$("#takePictureFieldBefore").on("change", function(event) { 
+					gotPic(event, 'beforeVolume_base64', 'beforeVolume', 'responseBefore');
+					//$(this).replaceWith($(this).clone());
+				});
+				$("#takePictureFieldAfter").on("change", function(event) { 
+					gotPic(event, 'afterVolume_base64', 'afterVolume', 'responseAfter');
+					//$(this).replaceWith($(this).clone());
+				});
 
 				if(!("url" in window) && ("webkitURL" in window)) 
 				{
-					window.URL = window.webkitURL;   
+					window.URL = window.webkitURL;
 				}
 
 				$("#take_picture_before").on("click", function() {
@@ -126,51 +131,64 @@
 				$("#dumpBrowser").html(navigator.userAgent.toLowerCase());
 			});
 			
-			// Credit: https://www.youtube.com/watch?v=EPYnGFEcis4&feature=youtube_gdata_player
-			function gotPicBefore(event) 
+			// Credit: https://www.youtube.com/watch?v=EPYnGFEcis4
+			// i modified this for this project needs
+			function gotPic(event, targetBase64ImageField, imageFieldId, dumpResult) 
 			{
+				var jpegWidth = 0;
+				var jpegHeight = 0;
+
 				var imageURI = event.target.files[0];
 				var imageFileSize = imageURI.size / 1024;
 
-				if(event.target.files.length == 1 && event.target.files[0].type.indexOf("image/") == 0)
-				{
-					$('#responseBefore').html(JSON.stringify(imageURI).replace(/,/g, ", <br/>"));
-
-					canvasResize(imageURI, {
-						width: jpegWidth,
-						height: jpegHeight,
-						crop: false,
-						quality: jpegQuality,
-						rotate: jpegRotation,
-						callback: function(data, width, height) {
-							$("#beforeVolume").attr("src", data);
-							$('#beforeVolume_base64').val( data );
-						}
-					});
-					
-				}
-			}
-
-			function gotPicAfter(event) 
-			{
-				var imageURI = event.target.files[0];
-				var imageFileSize = imageURI.size / 1024;
+				var reader = new FileReader();
+				var image  = new Image();
 
 				if(event.target.files.length == 1 && event.target.files[0].type.indexOf("image/") == 0)
 				{
-					$('#responseAfter').html(JSON.stringify(imageURI).replace(/,/g, ", <br/>"));
+					reader.readAsDataURL(imageURI);
+					reader.onload = function(_file) {
+						image.src    = _file.target.result;
+						image.onload = function() {
+							var w = this.width,
+							h = this.height,
+							t = imageURI.type,
+							n = imageURI.name,
+							s = imageURI.size/1024;
 
-					canvasResize(imageURI, {
-						width: jpegWidth,
-						height: jpegHeight,
-						crop: false,
-						quality: jpegQuality,
-						rotate: jpegRotation,
-						callback: function(data, width, height) {
-							$("#afterVolume").attr("src", data);
-							$('#afterVolume_base64').val( data );
-						}
-					});
+							if (s > 1024)
+							{
+								alert("Image you taken is too big. Please use smaller resolution.");
+							} else {
+
+								if (w < h)
+								{
+									jpegHeight = 640;
+									jpegWidth = 360;
+								} else {
+									jpegHeight = 360;
+									jpegWidth = 640;
+								}
+
+								$("#" + dumpResult).html(JSON.stringify(imageURI).replace(/,/g, ", <br/>"));
+
+								canvasResize(imageURI, {
+									width: jpegWidth,
+									height: jpegHeight,
+									crop: false,
+									quality: jpegQuality,
+									rotate: jpegRotation,
+									callback: function(data, width, height) {
+										$("#" + imageFieldId).attr('src', data);
+										$("#" + targetBase64ImageField).val( data );
+									}
+								});
+							}
+						};
+						image.onerror= function() {
+							alert('Invalid file type: '+ file.type);
+						};
+					};
 				}
 			} 
 
